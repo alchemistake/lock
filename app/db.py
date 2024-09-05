@@ -15,6 +15,7 @@ def init_db():
     c.execute(
         """CREATE TABLE IF NOT EXISTS clicks
                 (email TEXT, year INTEGER, month INTEGER, count INTEGER,
+                timestamp TEXT,
                 PRIMARY KEY (email, year, month))"""
     )
     conn.commit()
@@ -24,14 +25,25 @@ def increment_click(email):
     now = datetime.now()
     conn = get_db_connection()
     c = conn.cursor()
+
+    # Get the timestamp of the last increment for this email
     c.execute(
-        """INSERT INTO clicks (email, year, month, count) 
-                VALUES (?, ?, ?, 1)
-                ON CONFLICT(email, year, month) 
-                DO UPDATE SET count = count + 1""",
-        (email, now.year, now.month),
+        """SELECT MAX(timestamp) FROM clicks WHERE email = ?""",
+        (email,)
     )
-    conn.commit()
+    last_increment = c.fetchone()[0]
+
+    # Check if it's been at least 10 minutes since the last increment
+    if not last_increment or (now - datetime.fromisoformat(last_increment)).total_seconds() >= 600:
+        c.execute(
+            """INSERT INTO clicks (email, year, month, count, timestamp) 
+                    VALUES (?, ?, ?, 1, ?)
+                    ON CONFLICT(email, year, month) 
+                    DO UPDATE SET count = count + 1, timestamp = ?""",
+            (email, now.year, now.month, now.isoformat(), now.isoformat()),
+        )
+        conn.commit()
+
     conn.close()
 
 def get_clicks_data():
