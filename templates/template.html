@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            font-family: "Helvetica Neue", Helvetica, sans-serif;
+            color: white;
+        }
+
+        h2 {
+            text-align: center;
+            width: 100%;
+        }
+
+        iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            z-index: -1;
+        }
+
+        .email-overlay {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: white;
+            padding: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <h2 class="email-overlay">{{email_message}}</h2>
+    <iframe src="https://lockyourscreen.com"></iframe>
+</body>
+
+</html>
