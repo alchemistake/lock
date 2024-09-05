@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  lock:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/data
+    environment:
+      - PYTHONUNBUFFERED=1
+      - SQLITE_DB_PATH=/data/clicks.db
+    restart: always
+
+volumes:
+  data:

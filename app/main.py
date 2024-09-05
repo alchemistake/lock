@@ -2,7 +2,8 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 import sys
 import time
 import os
-import threading
+import signal
+import sys
 from urllib.parse import parse_qs, urlparse
 from db import init_db, increment_click, get_clicks_data, get_user_total_clicks
 
@@ -64,7 +65,12 @@ def run_server(port=8000):
     server_address = ("", port)
     httpd = HTTPServer(server_address, LockHandler)
     print(f"Server running on port {port}...")
-    httpd.serve_forever()
+    
+    try:
+        httpd.serve_forever()
+    except KeyboardInterrupt:
+        print("Shutting down the server...")
+        httpd.server_close()
 
 if __name__ == "__main__":
     run_server()

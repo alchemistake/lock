@@ -1,8 +1,16 @@
 import sqlite3
 from datetime import datetime
+import os
+
+def get_db_connection():
+    db_path = os.environ.get('SQLITE_DB_PATH', 'clicks.db')
+    conn = sqlite3.connect(db_path)
+    return conn
 
 def init_db():
-    conn = sqlite3.connect("clicks.db")
+    import os
+
+    conn = get_db_connection()
     c = conn.cursor()
     c.execute(
         """CREATE TABLE IF NOT EXISTS clicks
@@ -14,7 +22,7 @@ def init_db():
 
 def increment_click(email):
     now = datetime.now()
-    conn = sqlite3.connect("clicks.db")
+    conn = get_db_connection()
     c = conn.cursor()
     c.execute(
         """INSERT INTO clicks (email, year, month, count) 
@@ -27,7 +35,7 @@ def increment_click(email):
     conn.close()
 
 def get_clicks_data():
-    conn = sqlite3.connect("clicks.db")
+    conn = get_db_connection()
     c = conn.cursor()
     current_month = datetime.now().month
     current_year = datetime.now().year
@@ -42,7 +50,7 @@ def get_clicks_data():
     return data
 
 def get_user_total_clicks(email):
-    conn = sqlite3.connect("clicks.db")
+    conn = get_db_connection()
     c = conn.cursor()
     c.execute(
         """SELECT SUM(count) FROM clicks WHERE email = ?""",

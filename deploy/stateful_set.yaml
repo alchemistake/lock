@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: lock
+  labels:
+    app: lock
+spec:
+  serviceName: "lock"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lock
+  template:
+    metadata:
+      labels:
+        app: lock
+    spec:
+      containers:
+      - name: lock
+        image: lock:latest
+        ports:
+        - containerPort: 8000
+        env:
+        - name: PYTHONUNBUFFERED
+          value: "1"
+        - name: SQLITE_DB_PATH
+          value: "/data/clicks.db"
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 256Mi
+        volumeMounts:
+        - name: lock-data
+          mountPath: /data
+  volumeClaimTemplates:
+  - metadata:
+      name: lock-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi
