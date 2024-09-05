@@ -52,13 +52,36 @@
             margin: auto;
             text-align: center;
         }
+
+        .stats-link {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            z-index: 1;
+        }
+
+        .stats-link a {
+            color: white;
+            text-decoration: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            background-color: rgba(255, 255, 255, 0.2);
+            transition: background-color .5s ease;
+        }
+
+        .stats-link a:hover {
+            background: linear-gradient(to right, #00ff00, #0000ff);
+        }
     </style>
 </head>
 
 <body>
     <h2 class="email-overlay">{{email_message}}</h2>
+    <div class="stats-link">
+        <a href="/stats">Check the Table of Shame!</a>
+    </div>
     <iframe src="https://lockyourscreen.com"></iframe>
-    {{shame_table}}
 </body>
 
 </html>
