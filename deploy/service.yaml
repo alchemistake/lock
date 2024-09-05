@@ -9,6 +9,7 @@ spec:
     app: lock
   ports:
     - protocol: TCP
+      name: http
       port: 80
       targetPort: 8000
   type: ClusterIP

@@ -31,7 +31,7 @@ class LockHandler(BaseHTTPRequestHandler):
             template = file.read()
 
         if "X-Goog-Authenticated-User-Email" in self.headers:
-            email = self.headers["X-Goog-Authenticated-User-Email"]
+            email = self.headers["X-Goog-Authenticated-User-Email"].split(":")[1].split("@")[0]
             increment_click(email)
             user_total_clicks = get_user_total_clicks(email)
             email_message = f"{email}. In total you failed {user_total_clicks} times."
@@ -46,10 +46,12 @@ class LockHandler(BaseHTTPRequestHandler):
         self.wfile.write(html_content.encode())
 
     def send_stats_page(self):
+        from datetime import datetime
+
         clicks_data = get_clicks_data()
-        current_year, current_month = clicks_data[0][1], clicks_data[0][2] if clicks_data else (None, None)
+        current_date = datetime.now()
         html_content = '<html><body>'
-        html_content += f'<h1>Table of Shame - {current_year}/{current_month:02d}</h1>'
+        html_content += f'<h1>Table of Shame - {current_date.strftime("%Y/%m")}</h1>'
         html_content += '<ol>'
         for row in clicks_data:
             html_content += f"<li>{row[0]} left their computer unlocked {row[3]} times</li>"
